@@ -128,8 +128,7 @@ def print_board(board):
         print " ".join(row)
 
 
-def HisTurn():
-    global lost
+def HisTurn(my_socket):
     lost = False
     data = my_socket.recv(1024)
     data = pickle.loads(data)
@@ -147,60 +146,62 @@ def HisTurn():
             print "\nHe shot the same place twice, what an idiot"
         elif item == "turn":
             print "\nIt's your turn now!"
+    return lost
 
 
 # Game Methods End
-def end():
+def end(my_socket):
     my_socket.close()
 
+#---------------main-----------------
 
-port = 8820
-ip = '172.22.18.23'
-my_socket = socket.socket()
-my_socket.connect((ip, port))
-messg = my_socket.recv(1024)
-tempMesg = raw_input(messg)
-my_socket.send(tempMesg)
-data_arr = my_socket.recv(1024)
-MyBoard = pickle.loads(data_arr)
+    port = 8820
+    ip = '172.22.18.23'
+    my_socket = socket.socket()
+    my_socket.connect((ip, port))
+    messg = my_socket.recv(1024)
+    tempMesg = raw_input(messg)
+    my_socket.send(tempMesg)
+    data_arr = my_socket.recv(1024)
+    MyBoard = pickle.loads(data_arr)
 
-print_board(MyBoard)
-print "\n This is your board! Now it's time to create some ships!"
+    print_board(MyBoard)
+    print "\n This is your board! Now it's time to create some ships!"
 
-MyBoard = createOwnBoard(MyBoard)
-print "\nThis is your board now:\n"
-print_board(MyBoard)
-raw_input("\nPress any key to continue!\n")
-print "Sending board to server.... Please wait\n"
-dataToSend = pickle.dumps(MyBoard)
-my_socket.send(dataToSend)  # Send the board
+    MyBoard = createOwnBoard(MyBoard)
+    print "\nThis is your board now:\n"
+    print_board(MyBoard)
+    raw_input("\nPress any key to continue!\n")
+    print "Sending board to server.... Please wait\n"
+    dataToSend = pickle.dumps(MyBoard)
+    my_socket.send(dataToSend)  # Send the board
 
-data = my_socket.recv(1024)  # Gets "Wait for me to choose"
-print data
-data = my_socket.recv(1024)  # Gets "I did it"
-print data
-HisBoard = my_socket.recv(1024)  # Gets board
-HisBoard = pickle.loads(HisBoard)
-print "\nRecived his board"
-data = my_socket.recv(1024)  # Gets the person who starts.
-print data
-if data == "You'll start!":
-    while not victory:
-        moves = game(HisBoard)
-        data_string = pickle.dumps(moves)
-        my_socket.send(data_string)
-        if moves[-1] == "Won battle":
-            break
-        HisTurn()
-        if lost:
-            break
-    end()
-elif data == "I'll start!":
-    while not victory:
-        HisTurn()
-        if lost:
-            break
-        moves = game(HisBoard)
-        data_string = pickle.dumps(moves)
-        my_socket.send(data_string)
-    end()
+    data = my_socket.recv(1024)  # Gets "Wait for me to choose"
+    print data
+    data = my_socket.recv(1024)  # Gets "I did it"
+    print data
+    HisBoard = my_socket.recv(1024)  # Gets board
+    HisBoard = pickle.loads(HisBoard)
+    print "\nRecived his board"
+    data = my_socket.recv(1024)  # Gets the person who starts.
+    print data
+    if data == "You'll start!":
+        while not victory:
+            moves = game(HisBoard)
+            data_string = pickle.dumps(moves)
+            my_socket.send(data_string)
+            if moves[-1] == "Won battle":
+                break
+            lost = HisTurn(my_socket)
+            if lost:
+                break
+        end(my_socket)
+    elif data == "I'll start!":
+        while not victory:
+            lost = HisTurn(my_socket)
+            if lost:
+                break
+            moves = game(HisBoard)
+            data_string = pickle.dumps(moves)
+            my_socket.send(data_string)
+        end(my_socket)

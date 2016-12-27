@@ -156,7 +156,6 @@ def game(p1board):
 
 
 def HisTurn():
-    global lost
     lost = False
     data = client_socket.recv(1024)
     data = pickle.loads(data)
@@ -174,6 +173,7 @@ def HisTurn():
             print "\nHe shot the same place twice, what an idiot"
         elif item == "turn":
             print "\nIt's your turn now!"
+    return lost
 
 
 # ---------------------------GameEnd
@@ -212,7 +212,7 @@ if num == 1:
     print "He starts"
     client_socket.send("You'll start!")
     while not victory:
-        HisTurn()
+        lost = HisTurn()
         if lost:
             break
         moves = game(p2board)
@@ -228,7 +228,7 @@ elif num == 2:
         client_socket.send(data_string)
         if moves[-1] == "Won battle":
             break
-        HisTurn()
+        lost = HisTurn()
         if lost:
             break
     end()
