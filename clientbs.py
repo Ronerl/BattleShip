@@ -1,6 +1,5 @@
 import socket, pickle, ship
 
-
 # The game itself
 def chooseRow():
     row = None
@@ -189,7 +188,7 @@ def end(my_socket):
 #---------------main-----------------
 
 port = 8820
-ip = '172.22.18.23'
+ip = socket.gethostbyname(socket.gethostname())
 my_socket = socket.socket()
 my_socket.connect((ip, port))
 messg = my_socket.recv(1024)
