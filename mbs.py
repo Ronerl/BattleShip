@@ -1,12 +1,21 @@
-import socket, pickle
+import socket, pickle, ship
 from random import randint
 
 # ------------------------GameStart
 
-#### Battle Start
 
 p1board = []
 p2board = []
+# ----- Battle Ships class
+
+
+
+
+
+
+#Battle Start
+
+
 
 for x in range(10):
     p1board.append(["O"] * 10)
@@ -14,7 +23,7 @@ for x in range(10):
     p2board.append(["0"] * 10)
 
 
-######Game Methods
+# Game Methods
 def print_board(board):
     for row in board:
         print " ".join(row)
@@ -22,101 +31,43 @@ def print_board(board):
 
 def chooseRow():
     inOcean = True
-    global Splace
     while inOcean:
         try:
-            Splace = int(raw_input("Enter start point\n"))
+            row = int(raw_input("Enter row\n")) - 1
         except ValueError:
             print "Please enter a number, not a letter!"
             continue
-        if Splace >= 0 and Splace < 10:
+        if row >= 0 and row < 10:
             inOcean = False
             continue
         print "Enter a number within our ocean please"
-    global Eplace
-    inOcean = True
-    while inOcean:
-        try:
-            Eplace = int(raw_input("Enter end point\n"))
-        except ValueError:
-            print "Please enter a number, not a letter!"
-            continue
-        if Eplace >= 0 and Eplace < 10:
-            inOcean = False
-            continue
-        print "Enter a number within our ocean please"
+    return row
 
-    global Cplace
-    inOcean = True
-    while inOcean:
-        try:
-            Cplace = int(raw_input("Enter collumn:\n"))
-        except ValueError:
-            print "Please enter a number, not a letter!"
-            continue
-        if Cplace >= 0 and Cplace < 10:
-            inOcean = False
-            continue
-        print "Enter a number within our ocean please"
 
 
 def chooseCol():
     # Prevent letters
     inOcean = True
-    global Splace
     while inOcean:
         try:
-            Splace = int(raw_input("Enter start point\n"))
+            col = int(raw_input("Enter col\n")) -1
         except ValueError:
             print "Please enter a number, not a letter!"
             continue
-        if Splace >= 0 and Splace < 10:
+        if col >= 0 and col < 10:
             inOcean = False
             continue
         print "Enter a number within our ocean please"
-    global Eplace
-    inOcean = True
-    while inOcean:
-        try:
-            Eplace = int(raw_input("Enter end point\n"))
-        except ValueError:
-            print "Please enter a number, not a letter!"
-            continue
-        if Eplace >= 0 and Eplace < 10:
-            inOcean = False
-            continue
-        print "Enter a number within our ocean please"
+    return col
 
-    global Rplace
-    inOcean = True
-    while inOcean:
-        try:
-            Rplace = int(raw_input("Enter row:\n"))
-        except ValueError:
-            print "Please enter a number, not a letter!"
-            continue
-        if Rplace >= 0 and Rplace < 10:
-            inOcean = False
-            continue
-        print "Enter a number within our ocean please"
 
 
 def createOwnBoard(YourBoard):
-    timesToRun = 2
-    while timesToRun > 0:
-        choice = raw_input("R for vertical ship, C for horizontal!\n")
-        if choice.lower() == 'c':
-            chooseRow()
-            for num in range(min(Splace, Eplace), max(Splace, Eplace)):
-                YourBoard[num][Cplace] = "^"
-            timesToRun -= 1
-        elif choice.lower() == 'r':
-            chooseCol()
-            for num in range(min(Splace, Eplace), max(Splace, Eplace)):
-                YourBoard[Rplace][num] = "^"
-            timesToRun -= 1
-        else:
-            print "Please enter a valid letter"
+    ship1 = ship.battle_ship(chooseRow(), chooseCol())
+    ship2 = ship.battle_ship(chooseRow(), chooseCol())
+    direction = ship1.createOwnBoard(YourBoard)
+    ship2.createOwnBoard1(YourBoard, direction)
+    return YourBoard
 
 
 def victoryChecker(Board):

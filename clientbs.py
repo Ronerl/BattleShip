@@ -1,112 +1,50 @@
-import socket, pickle
-
-"""Errors:
-bad input crashes everything
-bad guesses count
+import socket, pickle, ship
 
 
-"""
-
-
-####The game itself
+# The game itself
 def chooseRow():
     inOcean = True
-    global Splace
     while inOcean:
         try:
-            Splace = int(raw_input("Enter start point\n"))
+            row = int(raw_input("Enter row\n")) - 1
         except ValueError:
             print "Please enter a number, not a letter!"
             continue
-        if Splace >= 0 and Splace < 10:
+        if row >= 0 and row < 10:
             inOcean = False
             continue
         print "Enter a number within our ocean please"
-    global Eplace
-    inOcean = True
-    while inOcean:
-        try:
-            Eplace = int(raw_input("Enter end point\n"))
-        except ValueError:
-            print "Please enter a number, not a letter!"
-            continue
-        if Eplace >= 0 and Eplace < 10:
-            inOcean = False
-            continue
-        print "Enter a number within our ocean please"
+    return row
 
-    global Cplace
-    inOcean = True
-    while inOcean:
-        try:
-            Cplace = int(raw_input("Enter collumn:\n"))
-        except ValueError:
-            print "Please enter a number, not a letter!"
-            continue
-        if Cplace >= 0 and Cplace < 10:
-            inOcean = False
-            continue
-        print "Enter a number within our ocean please"
 
 
 def chooseCol():
     # Prevent letters
     inOcean = True
-    global Splace
     while inOcean:
         try:
-            Splace = int(raw_input("Enter start point\n"))
+            col = int(raw_input("Enter col\n")) - 1
         except ValueError:
             print "Please enter a number, not a letter!"
             continue
-        if Splace >= 0 and Splace < 10:
+        if col >= 0 and col < 10:
             inOcean = False
             continue
         print "Enter a number within our ocean please"
-    global Eplace
-    inOcean = True
-    while inOcean:
-        try:
-            Eplace = int(raw_input("Enter end point\n"))
-        except ValueError:
-            print "Please enter a number, not a letter!"
-            continue
-        if Eplace >= 0 and Eplace < 10:
-            inOcean = False
-            continue
-        print "Enter a number within our ocean please"
+    return col
 
-    global Rplace
-    inOcean = True
-    while inOcean:
-        try:
-            Rplace = int(raw_input("Enter row:\n"))
-        except ValueError:
-            print "Please enter a number, not a letter!\n"
-            continue
-        if Rplace >= 0 and Rplace < 10:
-            inOcean = False
-            continue
-        print "Enter a number within our ocean please\n"
 
 
 def createOwnBoard(YourBoard):
-    timesToRun = 2
-    while timesToRun > 0:
-        choice = raw_input("R for vertical ship, C for horizontal!\n")
-        if choice.lower() == 'c':
-            chooseRow()
-            for num in range(min(Splace, Eplace), max(Splace, Eplace)):
-                YourBoard[num][Cplace] = "^"
-            timesToRun -= 1
-        elif choice.lower() == 'r':
-            chooseCol()
-            for num in range(min(Splace, Eplace), max(Splace, Eplace)):
-                YourBoard[Rplace][num] = "^"
-            timesToRun -= 1
-        else:
-            print "Please enter a valid letter\n"
+    ship1 = ship.battle_ship(chooseRow(), chooseCol())
+    ship2 = ship.battle_ship(chooseRow(), chooseCol())
+    direction = ship1.createOwnBoard(YourBoard)
+    ship2.createOwnBoard1(YourBoard, direction)
     return YourBoard
+
+
+
+
 
 
 def victoryChecker(Board):
@@ -140,7 +78,9 @@ def game(HisBoard):
     for turn in range(4):
         # Prevent errors here
         guess_row = guessRow()
+        guess_row -= 1
         guess_col = guessCol()
+        guess_col -= 1
         if HisBoard[guess_row][guess_col] == "^":
             print "\nCongratulations! You hit a battleship!\n"
             moves.append("Hit")
@@ -167,7 +107,7 @@ def game(HisBoard):
                 moves.append("Out")
                 if turn == 3:
                     print "\nOpponents turn\n"
-                    client_socket.send("\nYour turn")
+                    moves.append("turn")
                     continue
             elif (HisBoard[guess_row][guess_col] == "X"):
                 print "\nYou guessed that one already.\n"
@@ -209,7 +149,7 @@ def HisTurn():
             print "\nIt's your turn now!"
 
 
-###### Game Methods End
+# Game Methods End
 def end():
     my_socket.close()
 
