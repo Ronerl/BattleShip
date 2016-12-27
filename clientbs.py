@@ -3,6 +3,8 @@ import socket, pickle
 bad input crashes everything
 bad guesses count
 
+TEST
+
 """
 ####The game itself
 def chooseRow():
