@@ -9,17 +9,10 @@ p2board = []
 # ----- Battle Ships class
 
 
-
-
-
-
-#Battle Start
-
-
+#  Battle Start
 
 for x in range(10):
     p1board.append(["O"] * 10)
-for x in range(10):
     p2board.append(["0"] * 10)
 
 
@@ -30,6 +23,7 @@ def print_board(board):
 
 
 def chooseRow():
+    row = None
     inOcean = True
     while inOcean:
         try:
@@ -44,9 +38,9 @@ def chooseRow():
     return row
 
 
-
 def chooseCol():
     # Prevent letters
+    col = None
     inOcean = True
     while inOcean:
         try:
@@ -61,12 +55,36 @@ def chooseCol():
     return col
 
 
-
 def createOwnBoard(YourBoard):
     ship1 = ship.battle_ship(chooseRow(), chooseCol())
     ship2 = ship.battle_ship(chooseRow(), chooseCol())
-    direction = ship1.createOwnBoard(YourBoard)
-    ship2.createOwnBoard1(YourBoard, direction)
+    ship3 = ship.battle_ship(chooseRow(), chooseCol())
+    ship4 = ship.battle_ship(chooseRow(), chooseCol())
+    direction = ship1.createOwnBoard(YourBoard, 4)
+    while True:
+        try:
+            ship2.createOwnBoard1(YourBoard, direction, 3)
+            break
+        except ValueError:
+            print "Please choose a new ship, this spot is taken"
+            ship2 = ship.battle_ship(chooseRow(), chooseCol())
+
+    while True:
+        try:
+            ship3.createOwnBoard1(YourBoard, direction, 2)
+            break
+        except ValueError:
+            print "Please choose a new ship, this spot is taken"
+            ship3 = ship.battle_ship(chooseRow(), chooseCol())
+
+    while True:
+        try:
+            ship4.createOwnBoard1(YourBoard, direction, 1)
+            break
+        except ValueError:
+            print "Please choose a new ship, this spot is taken"
+            ship4 = ship.battle_ship(chooseRow(), chooseCol())
+
     return YourBoard
 
 
@@ -79,7 +97,7 @@ def victoryChecker(Board):
 
 
 def whoStarts():
-    num = randint(1, 2)
+    num = randint(1, 3)
     return num
 
 
@@ -88,21 +106,28 @@ def whoStarts():
 def guessCol():
     while True:
         try:
-            guess_col = int(raw_input("Guess col:\n"))
-            return guess_col
+            guess_col = int(raw_input("Guess col:\n"))-1
+            if guess_col < 10 and guess_col >= 0:
+                return guess_col
+            else:
+                print "Your guess is our of the ocean! Please retry\n"
+                continue
         except ValueError:
             print "Please enter a number, not a letter!\n"
-
 
 def guessRow():
     while True:
         try:
-            guess_row = int(raw_input("Guess row:\n"))
-            return guess_row
+            guess_row = int(raw_input("Guess row:\n"))-1
+            if guess_row < 10 and guess_row >= 0:
+                return guess_row
+            else:
+                print "Your guess is out of the ocean! Please retry!\n"
+                continue
         except ValueError:
             print "Please enter a number, not a letter!\n"
 
-global victory
+
 victory = False
 
 
@@ -194,7 +219,7 @@ client_socket.send("Ready to start! Press any key to start!")
 client_socket.recv(1024)
 ##########
 data_string = pickle.dumps(p1board)
-client_socket.send((data_string))
+client_socket.send(data_string)
 p2board = client_socket.recv(1024)
 p2board = pickle.loads(p2board)
 client_socket.send("Wait for me to choose!")
