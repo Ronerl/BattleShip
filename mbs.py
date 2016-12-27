@@ -57,10 +57,8 @@ def chooseCol():
 
 def createOwnBoard(YourBoard):
     ship1 = ship.battle_ship(chooseRow(), chooseCol())
-    ship2 = ship.battle_ship(chooseRow(), chooseCol())
-    ship3 = ship.battle_ship(chooseRow(), chooseCol())
-    ship4 = ship.battle_ship(chooseRow(), chooseCol())
     direction = ship1.createOwnBoard(YourBoard, 4)
+    ship2 = ship.battle_ship(chooseRow(), chooseCol())
     while True:
         try:
             ship2.createOwnBoard1(YourBoard, direction, 3)
@@ -69,14 +67,16 @@ def createOwnBoard(YourBoard):
             print "Please choose a new ship, this spot is taken"
             ship2 = ship.battle_ship(chooseRow(), chooseCol())
 
+    ship3 = ship.battle_ship(chooseRow(), chooseCol())
     while True:
         try:
-            ship3.createOwnBoard1(YourBoard, direction, 2)
+            direction = ship3.createOwnBoard(YourBoard, 2)
             break
         except ValueError:
             print "Please choose a new ship, this spot is taken"
             ship3 = ship.battle_ship(chooseRow(), chooseCol())
 
+    ship4 = ship.battle_ship(chooseRow(), chooseCol())
     while True:
         try:
             ship4.createOwnBoard1(YourBoard, direction, 1)
