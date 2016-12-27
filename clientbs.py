@@ -65,7 +65,11 @@ def createOwnBoard(YourBoard):
             print "Please choose a new ship, this spot is taken"
             ship4 = ship.battle_ship(chooseRow(), chooseCol())
 
+    ship2.re_decorate(YourBoard, "&")
+    ship3.re_decorate(YourBoard, "*")
+    ship4.re_decorate(YourBoard, "$")
     return YourBoard
+
 
 
 def victoryChecker(Board):
@@ -109,9 +113,7 @@ def game(HisBoard):
     for turn in range(4):
         # Prevent errors here
         guess_row = guessRow()
-        guess_row -= 1
         guess_col = guessCol()
-        guess_col -= 1
         if HisBoard[guess_row][guess_col] == "^":
             print "\nCongratulations! You hit a battleship!\n"
             moves.append("Hit")
@@ -140,7 +142,7 @@ def game(HisBoard):
                     print "\nOpponents turn\n"
                     moves.append("turn")
                     continue
-            elif (HisBoard[guess_row][guess_col] == "X"):
+            elif HisBoard[guess_row][guess_col] == "X":
                 print "\nYou guessed that one already.\n"
                 moves.append("twice")
             else:

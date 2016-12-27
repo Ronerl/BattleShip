@@ -85,6 +85,9 @@ def createOwnBoard(YourBoard):
             print "Please choose a new ship, this spot is taken"
             ship4 = ship.battle_ship(chooseRow(), chooseCol())
 
+    ship2.re_decorate(YourBoard, "&")
+    ship3.re_decorate(YourBoard, "*")
+    ship4.re_decorate(YourBoard, "$")
     return YourBoard
 
 
@@ -135,9 +138,7 @@ def game(p1board):
     moves = []
     for turn in range(4):
         guess_row = guessRow()
-        guess_row -= 1
         guess_col = guessCol()
-        guess_col -= 1
         if p1board[guess_row][guess_col] == "^":
             print "\nCongratulations! You hit a battleship!\n"
             moves.append("Hit")
